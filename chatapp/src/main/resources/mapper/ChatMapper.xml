@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.eunbee.chatapp.chat.mapper.ChatDAO">
+	<resultMap type = "ChatDTO" id = "ChatDTO">
+		<result column="id" property="id" />
+		<result column="name" property="name" />
+		<result column="owner_id" property="owner_id" />
+		<result column="chat_id" property="chat_id" />
+		<result column="member_id" property="member_id" />
+		<result column="auth" property="auth" />
+	</resultMap> 
+	
+	<select id="getAllChats" resultType="ChatDTO">
+		SELECT name FROM chat
+	</select>
+	
+	<select id="getChats" resultMap="ChatDTO" >
+		SELECT c.name, mc.member_id
+		FROM chat c
+		INNER JOIN member_chat mc 
+		ON c.id = mc.chat_id
+		AND mc.member_id = #{member_id}
+		AND mc.auth = #{auth}
+	</select>
+	
+	<select id="getAskedChats" parameterType="String" resultType="ChatDTO" >
+		SELECT c.name, mc.member_id
+		FROM chat c
+		INNER JOIN member_chat mc
+		ON c.id = mc.chat_id
+		AND c.owner_id = #{id}
+		AND mc.auth = 0
+	</select>
+</mapper>
